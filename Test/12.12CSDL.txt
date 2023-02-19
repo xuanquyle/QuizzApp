@@ -1,0 +1,117 @@
+CREATE PROC CAU1
+	AS
+	BEGIN
+		SELECT *
+		FROM SinhVien
+		WHERE MaSV='1951120131'
+	END
+	GO
+EXEC CAU1
+GO
+CREATE PROC CAU2
+AS 
+BEGIN
+	SELECT *
+	FROM KetQua
+	WHERE DiemThi>=7
+END
+GO
+EXEC CAU2
+GO
+CREATE PROC CAU3
+AS 
+BEGIN
+	SELECT SinhVien.MaSV, MonHoc.TenMH, KetQua.DiemThi
+	FROM KetQua,MonHoc,SinhVien
+	WHERE KetQua.MaMH=MonHoc.MaMH AND SinhVien.MaSV=KetQua.MaSV AND DiemThi<7
+END
+GO
+EXEC CAU3
+GO
+CREATE PROC CAU4
+AS 
+BEGIN
+	SELECT SinhVien.MaSV, MonHoc.TenMH, KetQua.DiemThi,Khoa.TenKhoa
+	FROM KetQua,MonHoc,SinhVien,Khoa,Lop
+	WHERE KetQua.MaMH=MonHoc.MaMH AND SinhVien.MaSV=KetQua.MaSV AND DiemThi<7 AND SinhVien.MaLop=Lop.MaLop AND Lop.MaKhoa=Khoa.MaKhoa
+END
+GO
+EXEC CAU4
+go 
+Create Proc CAU5
+	@data NVARCHAR (5),
+	@ms NVARCHAR(15)
+AS
+BEGIN
+	SELECT S.MaSV, S.HoTen, Khoa.TenKhoa
+	FROM SinhVien S, Lop, Khoa
+	WHERE S.MaLop=Lop.MaLop AND Lop.MaKhoa=Khoa.MaKhoa AND S.MaSV=@ms AND Khoa.MaKhoa= @data
+END
+GO
+EXEC CAU5 @data='CNTT', @ms='1951120131'
+GO
+
+
+
+GO
+CREATE PROC Cau6
+	@masv nchar(10)
+AS
+BEGIN
+	SELECT *
+	FROM SinhVien
+	WHERE SinhVien.MaSV = @masv
+END
+GO
+EXEC Cau6 @masv='1951120146'
+
+GO
+CREATE PROC Cau7
+	@diem int
+AS
+BEGIN
+	SELECT SinhVien.MaSV,SinhVien.HoTen,MaMH,DiemThi
+	FROM SinhVien , KetQua 
+	WHERE SinhVien.MaSV = KetQua.MaSV AND DiemThi > @diem 
+END
+GO 
+EXEC Cau7 @diem=8
+GO
+
+CREATE PROC Cau8
+	@lop nvarchar(50)
+AS
+BEGIN
+	SELECT *
+	FROM SinhVien,Lop
+	WHERE SinhVien.MaLop=Lop.MaLop AND Lop.MaLop=@lop
+END
+GO
+EXEC Cau8 @lop='CN19B'
+GO
+
+CREATE PROC Cau9
+	@khoa nvarchar(50)
+AS
+BEGIN
+	SELECT *
+	FROM SinhVien,Lop,Khoa
+	WHERE SinhVien.MaLop=Lop.MaLop AND Lop.MaKhoa=Khoa.MaKhoa AND @khoa=Lop.MaKhoa
+END
+GO
+EXEC Cau9 @khoa='CNTT'
+GO
+
+CREATE PROC Cau10
+AS
+BEGIN
+	SELECT MonHoc.MaMH,MonHoc.TenMH,COUNT(*) AS [So SV hoc]
+	FROM SinhVien,MonHoc,KetQua
+	WHERE SinhVien.MaSV=KetQua.MaSV AND KetQua.MaMH=MonHoc.MaMH	
+	GROUP BY MonHoc.MaMH,MonHoc.TenMH
+END
+GO
+EXEC Cau10
+GO
+	
+
